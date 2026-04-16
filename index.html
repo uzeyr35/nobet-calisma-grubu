@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nöbet ve Çalışma Grubu Seçme</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #ececee;
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --text: #1f2330;
+            --muted: #5a6072;
+            --btn-bg: #2d3142;
+            --btn-bg-hover: #4a5169;
+            --btn-text: #ffffff;
+            --shadow: 0 4px 14px rgba(20, 24, 40, 0.10);
+            --shadow-hover: 0 10px 24px rgba(20, 24, 40, 0.18);
+            --header-h: 56px;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        header.topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 clamp(16px, 4vw, 32px);
+            background: var(--header-bg);
+            backdrop-filter: saturate(180%) blur(10px);
+            -webkit-backdrop-filter: saturate(180%) blur(10px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+            z-index: 10;
+            font-size: clamp(0.85rem, 2.2vw, 1rem);
+            font-weight: 500;
+            color: var(--muted);
+        }
+
+        .topbar .date,
+        .topbar .clock {
+            white-space: nowrap;
+            letter-spacing: 0.2px;
+        }
+
+        .topbar .clock {
+            font-variant-numeric: tabular-nums;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        main {
+            min-height: 100vh;
+            padding: calc(var(--header-h) + clamp(24px, 6vh, 56px)) clamp(16px, 5vw, 48px) clamp(32px, 6vh, 64px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: clamp(12px, 2.5vh, 22px);
+        }
+
+        h1.title {
+            font-size: clamp(1.4rem, 4.6vw, 2.6rem);
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            line-height: 1.15;
+            max-width: 22ch;
+            text-wrap: balance;
+        }
+
+        .welcome {
+            font-family: 'Caveat', cursive;
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: 700;
+            color: #3a4259;
+            line-height: 1;
+            margin-top: clamp(4px, 1vh, 10px);
+        }
+
+        .prompt {
+            font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+            color: var(--muted);
+            font-weight: 400;
+            margin-bottom: clamp(8px, 2vh, 18px);
+        }
+
+        nav.actions {
+            width: 100%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: clamp(4px, 1vh, 12px);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px 18px;
+            font-family: inherit;
+            font-size: clamp(0.95rem, 2.4vw, 1.05rem);
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            color: var(--btn-text);
+            background: var(--btn-bg);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition:
+                background-color 0.25s ease,
+                transform 0.15s ease,
+                box-shadow 0.25s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:hover {
+            background: var(--btn-bg-hover);
+            transform: scale(1.03);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 6px rgba(20, 24, 40, 0.12);
+        }
+
+        .btn:focus-visible {
+            outline: 3px solid #8a93ad;
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 480px) {
+            :root { --header-h: 48px; }
+            nav.actions { max-width: 100%; }
+            .btn { padding: 13px 16px; }
+        }
+
+        @media (min-width: 1024px) {
+            nav.actions { max-width: 380px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <span class="date" id="date">—</span>
+        <span class="clock" id="clock">--:--:--</span>
+    </header>
+
+    <main>
+        <h1 class="title">NÖBET VE ÇALIŞMA GRUBU SEÇME</h1>
+        <p class="welcome">hoşgeldiniz</p>
+        <p class="prompt">… ne yapmak istersiniz?</p>
+
+        <nav class="actions" aria-label="Ana menü">
+            <button type="button" class="btn">NÖBET LİSTESİ</button>
+            <button type="button" class="btn" onclick="location.href='calisma-grubu.html'">ÇALIŞMA GRUBU SEÇME</button>
+            <button type="button" class="btn">DİĞER…</button>
+            <button type="button" class="btn">BENİM SAYFAM</button>
+        </nav>
+    </main>
+
+    <script>
+        (function () {
+            const dateEl = document.getElementById('date');
+            const clockEl = document.getElementById('clock');
+            const dateFmt = new Intl.DateTimeFormat('tr-TR', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+            });
+            const timeFmt = new Intl.DateTimeFormat('tr-TR', {
+                hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+            });
+
+            function tick() {
+                const now = new Date();
+                dateEl.textContent = dateFmt.format(now);
+                clockEl.textContent = timeFmt.format(now);
+            }
+
+            tick();
+            setInterval(tick, 1000);
+        })();
+    </script>
+</body>
+</html>

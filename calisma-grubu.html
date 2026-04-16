@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çalışma Grubu Seçme</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #ececee;
+            --card-bg: #ffffff;
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --text: #1f2330;
+            --muted: #5a6072;
+            --line: #e3e5ec;
+            --accent: #2d3142;
+            --accent-hover: #4a5169;
+            --first: #2563eb;
+            --last:  #b45309;
+            --shadow: 0 4px 14px rgba(20, 24, 40, 0.08);
+            --shadow-hover: 0 10px 24px rgba(20, 24, 40, 0.16);
+            --header-h: 56px;
+            --radius: 12px;
+        }
+
+        html, body { height: 100%; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        header.topbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 0 clamp(12px, 4vw, 32px);
+            background: var(--header-bg);
+            backdrop-filter: saturate(180%) blur(10px);
+            -webkit-backdrop-filter: saturate(180%) blur(10px);
+            box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+            z-index: 10;
+            font-size: clamp(0.8rem, 2.2vw, 1rem);
+            color: var(--muted);
+        }
+
+        .topbar .left,
+        .topbar .right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .back {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px; height: 36px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(45, 49, 66, 0.08);
+            color: var(--text);
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.2s ease, transform 0.15s ease;
+        }
+        .back:hover { background: rgba(45, 49, 66, 0.16); transform: scale(1.05); }
+        .back:active { transform: scale(0.95); }
+
+        .topbar .date { white-space: nowrap; font-weight: 500; }
+        .topbar .clock {
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        main {
+            min-height: 100vh;
+            padding: calc(var(--header-h) + clamp(20px, 4vh, 40px)) clamp(14px, 4vw, 32px) clamp(40px, 8vh, 80px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(18px, 3vh, 28px);
+        }
+
+        h1.title {
+            font-size: clamp(1.3rem, 3.8vw, 2rem);
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 720px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: clamp(18px, 3vw, 26px);
+        }
+
+        .card h2 {
+            font-size: clamp(1rem, 2.4vw, 1.15rem);
+            font-weight: 700;
+            margin-bottom: 14px;
+            color: var(--text);
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+        }
+
+        label.field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            font: inherit;
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: #f8f9fb;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+        }
+        input[type="number"]:focus,
+        input[type="text"]:focus {
+            border-color: var(--accent);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(45, 49, 66, 0.12);
+        }
+        input[type="number"] { width: 110px; }
+
+        .btn {
+            font: inherit;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            color: #fff;
+            background: var(--accent);
+            border: none;
+            border-radius: var(--radius);
+            padding: 11px 18px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: background-color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+        }
+        .btn:hover { background: var(--accent-hover); transform: scale(1.02); box-shadow: var(--shadow-hover); }
+        .btn:active { transform: scale(0.98); }
+        .btn.secondary {
+            background: transparent;
+            color: var(--accent);
+            box-shadow: none;
+            border: 1px solid var(--line);
+        }
+        .btn.secondary:hover { background: rgba(45, 49, 66, 0.06); }
+
+        .people {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .person {
+            display: grid;
+            grid-template-columns: 28px 1fr auto;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: #fafbfd;
+        }
+        .person .idx {
+            font-variant-numeric: tabular-nums;
+            color: var(--muted);
+            font-weight: 600;
+            text-align: center;
+        }
+        .person input[type="text"] {
+            background: #fff;
+        }
+
+        .pref {
+            display: inline-flex;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .pref label {
+            padding: 7px 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.18s ease, color 0.18s ease;
+        }
+        .pref input { display: none; }
+        .pref label:hover { background: #f0f1f5; }
+        .pref input[value="ilk"]:checked + label { background: var(--first); color: #fff; }
+        .pref input[value="son"]:checked + label { background: var(--last); color: #fff; }
+        .pref input[value=""]:checked + label { background: #e8eaf0; color: var(--text); }
+
+        .counts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: flex-end;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px dashed var(--line);
+        }
+        .counts .hint {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-left: auto;
+        }
+
+        .results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        @media (max-width: 560px) {
+            .results { grid-template-columns: 1fr; }
+            .person { grid-template-columns: 24px 1fr; }
+            .person .pref { grid-column: 1 / -1; justify-self: stretch; }
+            .pref { width: 100%; justify-content: space-between; display: grid; grid-template-columns: 1fr 1fr 1fr; }
+            .pref label { text-align: center; padding: 8px 6px; }
+        }
+
+        .group-card {
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 14px;
+            background: #fafbfd;
+        }
+        .group-card.first { border-top: 4px solid var(--first); }
+        .group-card.last  { border-top: 4px solid var(--last); }
+        .group-card h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .group-card .count {
+            font-size: 0.8rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+        .group-card ol {
+            list-style: decimal inside;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.95rem;
+        }
+        .group-card li.empty {
+            list-style: none;
+            color: var(--muted);
+            font-style: italic;
+        }
+        .badge {
+            display: inline-block;
+            margin-left: 6px;
+            padding: 1px 7px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: #e8eaf0;
+            color: var(--muted);
+        }
+        .badge.want-first { background: rgba(37, 99, 235, 0.12); color: var(--first); }
+        .badge.want-last  { background: rgba(180, 83, 9, 0.14);  color: var(--last); }
+
+        .warning {
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: #fff7e6;
+            border: 1px solid #f5d68a;
+            border-radius: 10px;
+            color: #7a5300;
+            font-size: 0.88rem;
+        }
+
+        [hidden] { display: none !important; }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="left">
+            <a class="back" href="index.html" aria-label="Geri">←</a>
+            <span class="date" id="date">—</span>
+        </div>
+        <div class="right">
+            <span class="clock" id="clock">--:--:--</span>
+        </div>
+    </header>
+
+    <main>
+        <h1 class="title">ÇALIŞMA GRUBU SEÇME</h1>
+
+        <section class="card">
+            <h2>1. Nöbete kaç kişi gelecek?</h2>
+            <div class="row">
+                <label class="field">
+                    <span>Toplam kişi sayısı</span>
+                    <input type="number" id="totalCount" min="2" max="50" placeholder="örn. 8">
+                </label>
+                <button type="button" class="btn" id="generateBtn">Listeyi oluştur</button>
+            </div>
+        </section>
+
+        <section class="card" id="peopleSection" hidden>
+            <h2>2. Katılımcılar &mdash; kim <span style="color:var(--first)">ilk</span>, kim <span style="color:var(--last)">son</span> istiyor?</h2>
+            <div class="people" id="peopleList"></div>
+
+            <div class="counts">
+                <label class="field">
+                    <span>İlk gruba kaç kişi?</span>
+                    <input type="number" id="firstCount" min="0">
+                </label>
+                <label class="field">
+                    <span>Son gruba kaç kişi?</span>
+                    <input type="number" id="lastCount" min="0">
+                </label>
+                <span class="hint" id="countHint"></span>
+            </div>
+            <div id="warning" class="warning" hidden></div>
+        </section>
+
+        <section class="card" id="resultSection" hidden>
+            <h2>3. Otomatik grup dağılımı</h2>
+            <div class="results">
+                <div class="group-card first">
+                    <h3>İlk Grup <span class="count" id="firstGroupCount"></span></h3>
+                    <ol id="firstGroup"></ol>
+                </div>
+                <div class="group-card last">
+                    <h3>Son Grup <span class="count" id="lastGroupCount"></span></h3>
+                    <ol id="lastGroup"></ol>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // ---------- Saat & tarih ----------
+        (function () {
+            const dateEl = document.getElementById('date');
+            const clockEl = document.getElementById('clock');
+            const dateFmt = new Intl.DateTimeFormat('tr-TR', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+            });
+            const timeFmt = new Intl.DateTimeFormat('tr-TR', {
+                hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+            });
+            function tick() {
+                const now = new Date();
+                dateEl.textContent = dateFmt.format(now);
+                clockEl.textContent = timeFmt.format(now);
+            }
+            tick();
+            setInterval(tick, 1000);
+        })();
+
+        // ---------- Durum ----------
+        const state = {
+            total: 0,
+            people: [], // { name, pref: 'ilk' | 'son' | '' }
+            firstCount: 0,
+            lastCount: 0,
+        };
+
+        const $ = (id) => document.getElementById(id);
+        const totalInput = $('totalCount');
+        const generateBtn = $('generateBtn');
+        const peopleSection = $('peopleSection');
+        const peopleList = $('peopleList');
+        const firstCountInput = $('firstCount');
+        const lastCountInput = $('lastCount');
+        const countHint = $('countHint');
+        const warningEl = $('warning');
+        const resultSection = $('resultSection');
+        const firstGroupOl = $('firstGroup');
+        const lastGroupOl = $('lastGroup');
+        const firstGroupCount = $('firstGroupCount');
+        const lastGroupCount = $('lastGroupCount');
+
+        // ---------- Liste oluşturma ----------
+        function buildPeople() {
+            const n = parseInt(totalInput.value, 10);
+            if (!Number.isFinite(n) || n < 2) {
+                totalInput.focus();
+                return;
+            }
+            state.total = n;
+            state.people = Array.from({ length: n }, (_, i) => ({
+                name: state.people[i]?.name || '',
+                pref: state.people[i]?.pref || '',
+            }));
+            // Varsayılan: ilk = yarı (yukarı yuvarla), son = kalan
+            state.firstCount = Math.ceil(n / 2);
+            state.lastCount = n - state.firstCount;
+            firstCountInput.max = n;
+            lastCountInput.max = n;
+            firstCountInput.value = state.firstCount;
+            lastCountInput.value = state.lastCount;
+
+            renderPeople();
+            peopleSection.hidden = false;
+            recalculate();
+        }
+
+        function renderPeople() {
+            peopleList.innerHTML = '';
+            state.people.forEach((p, i) => {
+                const row = document.createElement('div');
+                row.className = 'person';
+                row.innerHTML = `
+                    <div class="idx">${i + 1}</div>
+                    <input type="text" placeholder="Kişi ${i + 1} adı" value="${escapeAttr(p.name)}" data-idx="${i}" data-field="name">
+                    <div class="pref" role="radiogroup" aria-label="Tercih">
+                        <input type="radio" name="pref-${i}" id="pref-${i}-ilk" value="ilk" ${p.pref === 'ilk' ? 'checked' : ''}>
+                        <label for="pref-${i}-ilk">İlk</label>
+                        <input type="radio" name="pref-${i}" id="pref-${i}-none" value="" ${p.pref === '' ? 'checked' : ''}>
+                        <label for="pref-${i}-none">Fark etmez</label>
+                        <input type="radio" name="pref-${i}" id="pref-${i}-son" value="son" ${p.pref === 'son' ? 'checked' : ''}>
+                        <label for="pref-${i}-son">Son</label>
+                    </div>
+                `;
+                peopleList.appendChild(row);
+            });
+        }
+
+        function escapeAttr(s) {
+            return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+        }
+
+        // ---------- Olay dinleyicileri ----------
+        generateBtn.addEventListener('click', buildPeople);
+        totalInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); buildPeople(); }
+        });
+
+        peopleList.addEventListener('input', (e) => {
+            const t = e.target;
+            if (t.matches('input[type="text"]')) {
+                const i = parseInt(t.dataset.idx, 10);
+                state.people[i].name = t.value;
+                recalculate();
+            } else if (t.matches('input[type="radio"]')) {
+                const i = parseInt(t.name.split('-')[1], 10);
+                state.people[i].pref = t.value;
+                recalculate();
+            }
+        });
+
+        firstCountInput.addEventListener('input', () => {
+            const v = clampInt(firstCountInput.value, 0, state.total);
+            state.firstCount = v;
+            state.lastCount = state.total - v;
+            lastCountInput.value = state.lastCount;
+            recalculate();
+        });
+        lastCountInput.addEventListener('input', () => {
+            const v = clampInt(lastCountInput.value, 0, state.total);
+            state.lastCount = v;
+            state.firstCount = state.total - v;
+            firstCountInput.value = state.firstCount;
+            recalculate();
+        });
+
+        function clampInt(value, min, max) {
+            const n = parseInt(value, 10);
+            if (!Number.isFinite(n)) return min;
+            return Math.max(min, Math.min(max, n));
+        }
+
+        // ---------- Atama algoritması ----------
+        function assignGroups() {
+            const people = state.people.map((p, i) => ({ ...p, _i: i, label: p.name.trim() || `Kişi ${i + 1}` }));
+            const firstWanted = people.filter(p => p.pref === 'ilk');
+            const lastWanted  = people.filter(p => p.pref === 'son');
+            const noPref      = people.filter(p => p.pref === '');
+
+            const firstNeed = state.firstCount;
+            const lastNeed  = state.lastCount;
+
+            const first = [];
+            const last  = [];
+            const overflow = []; // tercihi olup yer kalmayanlar (pool'a düşer)
+
+            // 1) İlk isteyenleri ilk gruba (limit kadar)
+            firstWanted.forEach(p => {
+                if (first.length < firstNeed) first.push(p);
+                else overflow.push(p);
+            });
+            // 2) Son isteyenleri son gruba (limit kadar)
+            lastWanted.forEach(p => {
+                if (last.length < lastNeed) last.push(p);
+                else overflow.push(p);
+            });
+
+            // 3) Kalanları havuzdan doldur (önce fark etmez, sonra overflow)
+            const pool = [...noPref, ...overflow];
+            for (const p of pool) {
+                if (first.length < firstNeed) first.push(p);
+                else if (last.length < lastNeed) last.push(p);
+            }
+
+            return { first, last };
+        }
+
+        function recalculate() {
+            // Hint
+            const filled = state.people.filter(p => p.name.trim()).length;
+            countHint.textContent = `${state.total} kişiden ${filled} tanesinin adı girildi`;
+
+            // Uyarı: tercih çakışmaları
+            const wantFirst = state.people.filter(p => p.pref === 'ilk').length;
+            const wantLast  = state.people.filter(p => p.pref === 'son').length;
+            const warnings = [];
+            if (wantFirst > state.firstCount) {
+                warnings.push(`${wantFirst} kişi ilk istiyor ama ilk grupta ${state.firstCount} yer var; fazlası son gruba alınacak.`);
+            }
+            if (wantLast > state.lastCount) {
+                warnings.push(`${wantLast} kişi son istiyor ama son grupta ${state.lastCount} yer var; fazlası ilk gruba alınacak.`);
+            }
+            if (warnings.length) {
+                warningEl.hidden = false;
+                warningEl.textContent = warnings.join(' ');
+            } else {
+                warningEl.hidden = true;
+            }
+
+            // Sonucu üret
+            const { first, last } = assignGroups();
+            renderGroup(firstGroupOl, first, 'first');
+            renderGroup(lastGroupOl, last, 'last');
+            firstGroupCount.textContent = `(${first.length}/${state.firstCount})`;
+            lastGroupCount.textContent = `(${last.length}/${state.lastCount})`;
+            resultSection.hidden = false;
+        }
+
+        function renderGroup(ol, people, which) {
+            ol.innerHTML = '';
+            if (!people.length) {
+                const li = document.createElement('li');
+                li.className = 'empty';
+                li.textContent = 'Bu grupta kimse yok';
+                ol.appendChild(li);
+                return;
+            }
+            people.forEach(p => {
+                const li = document.createElement('li');
+                li.textContent = p.label;
+                if (which === 'first' && p.pref === 'son') {
+                    const b = document.createElement('span');
+                    b.className = 'badge want-last';
+                    b.textContent = 'son istemişti';
+                    li.appendChild(b);
+                } else if (which === 'last' && p.pref === 'ilk') {
+                    const b = document.createElement('span');
+                    b.className = 'badge want-first';
+                    b.textContent = 'ilk istemişti';
+                    li.appendChild(b);
+                } else if (which === 'first' && p.pref === 'ilk') {
+                    const b = document.createElement('span');
+                    b.className = 'badge want-first';
+                    b.textContent = 'ilk istedi';
+                    li.appendChild(b);
+                } else if (which === 'last' && p.pref === 'son') {
+                    const b = document.createElement('span');
+                    b.className = 'badge want-last';
+                    b.textContent = 'son istedi';
+                    li.appendChild(b);
+                }
+                ol.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
